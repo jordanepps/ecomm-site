@@ -37,6 +37,18 @@ export const StateContext = ({ children }) => {
     toast.success(`${quantity} ${product.name} added to the card.`);
   };
 
+  const onRemove = (product) => {
+    foundProduct = cartItems.find((item) => item._id === product._id);
+    const newCartItems = cartItems.filter((item) => item._id !== product._id);
+    setTotalPrice(
+      (prevTotalPrice) =>
+        prevTotalPrice - foundProduct.price * foundProduct.quantity
+    );
+    setTotalQuantities((prevTotalQty) => prevTotalQty - foundProduct.quantity);
+
+    setCartItems(newCartItems);
+  };
+
   const toggleCartItemQuantity = (id, value) => {
     //TODO: Fix bug where cart order changes on inc/dec
     foundProduct = cartItems.find((item) => item._id === id);
@@ -58,6 +70,7 @@ export const StateContext = ({ children }) => {
         setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price);
         setTotalQuantities((prevTotalQuantities) => prevTotalQuantities - 1);
       }
+      //TODO: Handle logic to remove item once dec past 1
     }
   };
 
@@ -84,6 +97,7 @@ export const StateContext = ({ children }) => {
         decQty,
         onAdd,
         toggleCartItemQuantity,
+        onRemove,
       }}
     >
       {children}
